@@ -88,13 +88,13 @@ JWT_SECRET=your_jwt_secret
 
 #### 1. Register User
 
-**POST** `/api/users/register`
+**POST** `/api/auth/register`
 
 **Request Body:**
 
 ```json
 {
-  "username": "john_doe",
+  "name": "john doe",
   "email": "john@example.com",
   "password": "password123"
 }
@@ -114,7 +114,7 @@ JWT_SECRET=your_jwt_secret
 
 #### 2. Login User
 
-**POST** `/api/users/login`
+**POST** `/api/auth/login`
 
 **Request Body:**
 
