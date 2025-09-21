@@ -1,7 +1,8 @@
 # 🚀 URL Shortener Backend
 
-A simple and efficient **URL Shortener Backend** built with **Node.js, Express, and MongoDB**.  
-This backend service allows users to shorten long URLs, manage them, and redirect short URLs to their original destinations.
+A secure and efficient **URL Shortener Backend** built with **Node.js, Express, and MongoDB**.  
+This backend service allows registered users to shorten long URLs, manage them, and redirect short URLs to their original destinations.  
+Authentication is handled via **JWT tokens**, ensuring that only authenticated users can create short URLs.
 
 ---
 
@@ -19,12 +20,12 @@ This backend service allows users to shorten long URLs, manage them, and redirec
 
 ## ✨ Features
 
-- Shorten long URLs into compact short links.
-- Redirect to original URLs using the short code.
-- MongoDB persistence for storing short and original URLs.
-- Authentication middleware (extendable for users).
-- Error handling middleware for cleaner responses.
-- Configurable environment variables for easy deployment.
+- Register and login users with **JWT-based authentication**
+- Only authenticated users can generate short URLs
+- Redirect short URLs to original links
+- MongoDB persistence for users and URLs
+- Authentication & error handling middleware
+- Configurable environment variables
 
 ---
 
@@ -34,6 +35,8 @@ This backend service allows users to shorten long URLs, manage them, and redirec
 - **Express.js** – Web framework
 - **MongoDB** – NoSQL database
 - **Mongoose** – ODM for MongoDB
+- **JWT (jsonwebtoken)** – Authentication
+- **bcrypt.js** – Password hashing
 - **dotenv** – Environment variable management
 
 ---
@@ -43,8 +46,8 @@ This backend service allows users to shorten long URLs, manage them, and redirec
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/url-shortener-backend.git
-   cd url-shortener-backend
+   git clone https://github.com/UTKARSHRAIKWAR/urlShortner-.git
+   cd urlShortner-
    ```
 
 2. Install dependencies:
@@ -68,22 +71,83 @@ This backend service allows users to shorten long URLs, manage them, and redirec
 
 ## 🔑 Environment Variables
 
-Create a `.env` file in the root directory and add the following:
+Create a `.env` file in the root directory:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/urlshortener
 BASE_URL=http://localhost:5000
-JWT_SECRET=your_jwt_secret   # if authentication is used
+JWT_SECRET=your_jwt_secret
 ```
 
 ---
 
 ## 📡 API Endpoints
 
-### 1. **Create Short URL**
+### **Auth Routes**
+
+#### 1. Register User
+
+**POST** `/api/users/register`
+
+**Request Body:**
+
+```json
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "User registered successfully",
+  "token": "jwt_token_here"
+}
+```
+
+---
+
+#### 2. Login User
+
+**POST** `/api/users/login`
+
+**Request Body:**
+
+```json
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "token": "jwt_token_here"
+}
+```
+
+---
+
+### **URL Routes (Authenticated)**
+
+#### 3. Create Short URL
 
 **POST** `/api/shorten`
+
+**Headers:**
+
+```
+Authorization: Bearer <jwt_token>
+```
 
 **Request Body:**
 
@@ -106,7 +170,7 @@ JWT_SECRET=your_jwt_secret   # if authentication is used
 
 ---
 
-### 2. **Redirect to Original URL**
+#### 4. Redirect to Original URL
 
 **GET** `/api/:urlCode`
 
@@ -118,7 +182,7 @@ GET http://localhost:5000/api/abc123
 
 **Response:**
 
-- Redirects to `https://www.example.com/some/very/long/url`.
+- Redirects to original URL if found
 - If not found:
 
 ```json
@@ -132,9 +196,11 @@ GET http://localhost:5000/api/abc123
 
 ## ▶️ Usage
 
-1. Send a `POST` request to `/api/shorten` with a long URL.
-2. Receive a shortened URL in response.
-3. Access the short URL `/api/:urlCode` to get redirected to the original link.
+1. Register a new user (`/api/auth/register`).
+2. Login with credentials (`/api/auth/login`) to receive a **JWT token**.
+3. Use the token in the `Authorization` header for protected routes.
+4. Create a short URL using `/api/shorten`.
+5. Access the short URL with `/api/:urlCode`.
 
 ---
 
@@ -167,4 +233,8 @@ backend/
 
 ---
 
-💡 You can extend this backend with authentication, analytics (e.g., click counts), or user-specific URL management.
+💡 Future Enhancements:
+
+- Track number of clicks on each short URL
+- User dashboard for managing URLs
+- Expiration dates for short links
