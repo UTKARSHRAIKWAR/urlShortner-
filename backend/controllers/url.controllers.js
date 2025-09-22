@@ -23,7 +23,7 @@ const urlCreater = asyncHandler(async (req, res) => {
     res.json(newUrl);
   } catch (error) {
     res.status(500).json({
-      error: "server error",
+      error: "failed to create short url",
     });
   }
 });
@@ -51,7 +51,7 @@ const getUrl = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      error: "server error",
+      error: "failed to redirect",
     });
   }
 });
